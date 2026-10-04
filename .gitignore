@@ -1,0 +1,15 @@
+# Build output
+build/
+cmake-build-*/
+
+# CLion / JetBrains
+.idea/
+
+# Local data
+data/*
+
+# Keep directory if desired
+!data/.gitkeep
+
+# OS
+.DS_Store

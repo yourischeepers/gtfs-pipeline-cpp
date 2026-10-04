@@ -1,0 +1,7 @@
+{
+  "name": "gtfs-pipeline-cpp",
+  "version-string": "0.1.0",
+  "dependencies": [
+    "protobuf"
+  ]
+}
