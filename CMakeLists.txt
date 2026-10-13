@@ -9,12 +9,18 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
+
+add_executable(gtfs_pipeline ${SOURCES})
+
+target_include_directories(gtfs_pipeline PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+
 find_package(Protobuf CONFIG REQUIRED)
 find_package(unofficial-vincentlaucsb-csv-parser CONFIG REQUIRED)
-
-add_executable(gtfs_pipeline
-        src/main.cpp
-)
 
 target_link_libraries(gtfs_pipeline
         PRIVATE

@@ -1,31 +1,20 @@
 #include <iostream>
 #include <vector>
-#include <csv.hpp>
+#include "domain/state/stops/stop.h"
+#include <chrono>
 
-struct Stop {
-    std::string stopId;
-};
-
-std::vector<Stop> load_stops() {
-    std::cout << "Loading stops\n";
-
-    std::vector<Stop> stops;
-    csv::CSVReader reader("../data/gtfs/stops.txt");
-
-    for (auto& row : reader) {
-        Stop stop {
-            .stopId = row["stop_id"].get<std::string>()
-        };
-
-        stops.push_back(stop);
-    }
-
-    return stops;
-}
+#include "data/loader/stops/stop-loader.h"
 
 int main() {
     std::cout << "GTFS pipeline\n";
-    std::vector<Stop> stops = load_stops();
-    std::cout << "Loaded " << stops.size() << " stops\n";
+
+    const auto start = std::chrono::steady_clock::now();
+    gtfs::StopLoader stop_loader;
+    const std::vector<gtfs::Stop> stops = stop_loader.loadStops();
+
+    const auto end = std::chrono::steady_clock::now();
+    const auto duration = std::chrono::duration<double, std::milli>(end - start);
+
+    std::cout << "Loaded " << stops.size() << " stops in " << duration.count() << "ms" << std::endl;
     return 0;
 }
