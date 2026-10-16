@@ -5,18 +5,111 @@
 
 namespace gtfs {
 
-    struct RawStop {
-        std::string id;
-        std::string name;
-        double lat{};
-        double lon{};
-        std::string parent_station;
-        std::string timezone;
-        WheelchairAccessibility wheelchair_accessible{WheelchairAccessibility::Unknown};
-        std::string platform_code;
-    };
+    namespace {
+        struct RawStop {
+            std::string id;
+            std::string name;
+            double lat{};
+            double lon{};
+            std::string parent_station;
+            std::string timezone;
+            WheelchairAccessibility wheelchair_accessible{WheelchairAccessibility::Unknown};
+            std::string platform_code;
+        };
 
-    std::vector<Stop> StopLoader::load_stops() {
+        Stop map_no_parent_to_stop(const RawStop& raw_stop) {
+            Stop stop;
+
+            stop.id = raw_stop.id;
+            stop.name = raw_stop.name;
+            stop.lat = raw_stop.lat;
+            stop.lon = raw_stop.lon;
+            stop.timezone = raw_stop.timezone;
+            stop.wheelchair_accessible = raw_stop.wheelchair_accessible;
+
+            return stop;
+        }
+
+        Platform map_to_platform(const RawStop& raw_stop) {
+            Platform platform;
+
+            platform.id = raw_stop.id;
+            platform.lat = raw_stop.lat;
+            platform.lon = raw_stop.lon;
+            platform.platform_code = raw_stop.platform_code;
+
+            return platform;
+        }
+
+        Platform generate_default_platform(const Stop &stop) {
+            Platform platform;
+
+            platform.id = stop.id;
+            platform.lat = stop.lat;
+            platform.lon = stop.lon;
+
+            return platform;
+        }
+
+        WheelchairAccessibility map_wheelchair_accessible(const int value) {
+            switch (value) {
+                case 1:
+                    return WheelchairAccessibility::Accessible;
+                case 2:
+                    return WheelchairAccessibility::NotAccessible;
+                default:
+                    return WheelchairAccessibility::Unknown;
+            }
+        }
+
+        template <typename T>
+        T get_safely(
+            csv::CSVRow& row,
+            const int column_index,
+            T fallback
+        ) {
+            if (column_index < 0) return fallback;
+
+            auto field = row[column_index];
+            if (field.is_null()) return fallback;
+
+            return field.get<T>();
+        }
+
+        std::vector<RawStop> load_raw_stops() {
+            std::vector<RawStop> raw_stops;
+
+            csv::CSVReader reader("../data/gtfs/stops.txt");
+
+            const int id_col = reader.index_of("stop_id");
+            const int name_col = reader.index_of("stop_name");
+            const int lat_col = reader.index_of("stop_lat");
+            const int lon_col = reader.index_of("stop_lon");
+            const int parent_id_col = reader.index_of("parent_station");
+            const int timezone_col = reader.index_of("stop_timezone");
+            const int wheelchair_accessible_col = reader.index_of("wheelchair_boarding");
+            const int platform_code_col = reader.index_of("platform_code");
+
+            for (auto& row : reader) {
+                RawStop raw_stop;
+
+                raw_stop.id = get_safely<std::string>(row, id_col, "");
+                raw_stop.name = get_safely<std::string>(row, name_col, "");
+                raw_stop.lat = get_safely<double>(row, lat_col, 0.0);
+                raw_stop.lon = get_safely<double>(row, lon_col, 0.0);
+                raw_stop.parent_station = get_safely<std::string>(row, parent_id_col, "");
+                raw_stop.timezone = get_safely<std::string>(row, timezone_col, "");
+                raw_stop.platform_code = get_safely<std::string>(row, platform_code_col, "");
+                raw_stop.wheelchair_accessible = map_wheelchair_accessible(get_safely<int>(row, wheelchair_accessible_col, 0));
+
+                raw_stops.push_back(std::move(raw_stop));
+            }
+
+            return raw_stops;
+        }
+    }
+
+    std::vector<Stop> load_stops() {
         std::vector<RawStop> raw_stops = load_raw_stops();
 
         // <ParentStopId, Platforms>
@@ -56,96 +149,5 @@ namespace gtfs {
         }
 
         return result;
-    }
-
-    Stop StopLoader::map_no_parent_to_stop(const RawStop& raw_stop) {
-        Stop stop;
-
-        stop.id = raw_stop.id;
-        stop.name = raw_stop.name;
-        stop.lat = raw_stop.lat;
-        stop.lon = raw_stop.lon;
-        stop.timezone = raw_stop.timezone;
-        stop.wheelchair_accessible = raw_stop.wheelchair_accessible;
-
-        return stop;
-    }
-
-    Platform StopLoader::map_to_platform(const RawStop& raw_stop) {
-        Platform platform;
-
-        platform.id = raw_stop.id;
-        platform.lat = raw_stop.lat;
-        platform.lon = raw_stop.lon;
-        platform.platform_code = raw_stop.platform_code;
-
-        return platform;
-    }
-
-    Platform StopLoader::generate_default_platform(const Stop &stop) {
-        Platform platform;
-
-        platform.id = stop.id;
-        platform.lat = stop.lat;
-        platform.lon = stop.lon;
-
-        return platform;
-    }
-
-    std::vector<RawStop> StopLoader::load_raw_stops() {
-        std::vector<RawStop> raw_stops;
-
-        csv::CSVReader reader("../data/gtfs/stops.txt");
-
-        const int id_col = reader.index_of("stop_id");
-        const int name_col = reader.index_of("stop_name");
-        const int lat_col = reader.index_of("stop_lat");
-        const int lon_col = reader.index_of("stop_lon");
-        const int parent_id_col = reader.index_of("parent_station");
-        const int timezone_col = reader.index_of("stop_timezone");
-        const int wheelchair_accessible_col = reader.index_of("wheelchair_boarding");
-        const int platform_code_col = reader.index_of("platform_code");
-
-        for (auto& row : reader) {
-            RawStop raw_stop;
-
-            raw_stop.id = get_safely<std::string>(row, id_col, "");
-            raw_stop.name = get_safely<std::string>(row, name_col, "");
-            raw_stop.lat = get_safely<double>(row, lat_col, 0.0);
-            raw_stop.lon = get_safely<double>(row, lon_col, 0.0);
-            raw_stop.parent_station = get_safely<std::string>(row, parent_id_col, "");
-            raw_stop.timezone = get_safely<std::string>(row, timezone_col, "");
-            raw_stop.platform_code = get_safely<std::string>(row, platform_code_col, "");
-            raw_stop.wheelchair_accessible = map_wheelchair_accessible(get_safely<int>(row, wheelchair_accessible_col, 0));
-
-            raw_stops.push_back(std::move(raw_stop));
-        }
-
-        return raw_stops;
-    }
-
-    WheelchairAccessibility StopLoader::map_wheelchair_accessible(const int value) {
-        switch (value) {
-            case 1:
-                return WheelchairAccessibility::Accessible;
-            case 2:
-                return WheelchairAccessibility::NotAccessible;
-            default:
-                return WheelchairAccessibility::Unknown;
-        }
-    }
-
-    template <typename T>
-    T StopLoader::get_safely(
-        csv::CSVRow& row,
-        const int column_index,
-        T fallback
-    ) {
-        if (column_index < 0) return fallback;
-
-        auto field = row[column_index];
-        if (field.is_null()) return fallback;
-
-        return field.get<T>();
     }
 }
