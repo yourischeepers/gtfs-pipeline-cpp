@@ -79,6 +79,7 @@ namespace gtfs {
 
         std::vector<RawStop> load_raw_stops() {
             std::vector<RawStop> raw_stops;
+            raw_stops.reserve(60000); // Estimate based on testing set
 
             csv::CSVReader reader("../data/gtfs/stops.txt");
 
@@ -115,13 +116,15 @@ namespace gtfs {
 
         // <ParentStopId, Platforms>
         std::unordered_map<std::string, std::vector<Platform>> platforms;
+        platforms.reserve(raw_stops.size());
         // <StopId, Stop>
         std::unordered_map<std::string, Stop> stops;
+        stops.reserve(raw_stops.size());
 
         // Organise stops and platforms with basic mapping
         for (const auto& raw_stop : raw_stops) {
             if (raw_stop.parent_station.empty()) {
-                stops[raw_stop.id] = map_no_parent_to_stop(raw_stop);
+                stops.emplace(raw_stop.id, map_no_parent_to_stop(raw_stop));
             } else {
                 platforms[raw_stop.parent_station].push_back(map_to_platform(raw_stop));
             }
