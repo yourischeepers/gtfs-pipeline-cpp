@@ -2,6 +2,7 @@
 #include <csv.hpp>
 #include <unordered_map>
 #include <ranges>
+#include <utility>
 
 namespace gtfs {
 
@@ -41,7 +42,7 @@ namespace gtfs {
             return platform;
         }
 
-        Platform generate_default_platform(const Stop &stop) {
+        Platform generate_default_platform(const Stop& stop) {
             Platform platform;
 
             platform.id = stop.id;
@@ -64,7 +65,7 @@ namespace gtfs {
 
         template <typename T>
         T get_safely(
-            csv::CSVRow& row,
+            const csv::CSVRow& row,
             const int column_index,
             T fallback
         ) {
@@ -130,7 +131,7 @@ namespace gtfs {
         for (auto& [parent_id, plats] : platforms) {
             if (auto stop = stops.find(parent_id); stop != stops.end()) {
                 for (auto& platform : plats) {
-                    stop->second.platforms.push_back(platform);
+                    stop->second.platforms.push_back(std::move(platform));
                 }
             }
         }
@@ -139,7 +140,6 @@ namespace gtfs {
         std::vector<Stop> result;
         result.reserve(stops.size());
 
-        // Add default platform for stops without platforms
         for (auto& stop: stops | std::views::values) {
             if (stop.platforms.empty()) {
                 stop.platforms.push_back(generate_default_platform(stop));

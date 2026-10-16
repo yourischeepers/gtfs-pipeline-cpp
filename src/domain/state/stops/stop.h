@@ -13,14 +13,13 @@ namespace gtfs {
         NotAccessible,
     };
 
-struct Stop {
-    std::string id;
-    std::string name;
-    double lat{};
-    double lon{};
-    std::string timezone;
-    WheelchairAccessibility wheelchair_accessible{WheelchairAccessibility::Unknown};
-    std::vector<Platform> platforms;
-};
-
+    struct Stop {
+        std::string id;
+        std::string name;
+        double lat{};
+        double lon{};
+        std::string timezone;
+        WheelchairAccessibility wheelchair_accessible{WheelchairAccessibility::Unknown};
+        std::vector<Platform> platforms;
+    };
 }

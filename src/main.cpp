@@ -1,7 +1,6 @@
 #include <chrono>
 #include <iostream>
 #include <vector>
-#include "domain/state/stops/stop.h"
 #include "data/loader/stops/stop-loader.h"
 
 int main() {

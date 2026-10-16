@@ -17,6 +17,7 @@ find_package(Protobuf CONFIG REQUIRED)
 find_package(unofficial-vincentlaucsb-csv-parser CONFIG REQUIRED)
 
 add_executable(gtfs_pipeline ${SOURCES})
+target_compile_options(gtfs_pipeline PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wconversion)
 
 target_include_directories(gtfs_pipeline PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
