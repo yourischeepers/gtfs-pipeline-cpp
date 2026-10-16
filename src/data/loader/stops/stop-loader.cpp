@@ -77,11 +77,11 @@ namespace gtfs {
             return field.get<T>();
         }
 
-        std::vector<RawStop> load_raw_stops() {
+        std::vector<RawStop> load_raw_stops(const std::string& dataset_directory) {
             std::vector<RawStop> raw_stops;
             raw_stops.reserve(60000); // Estimate based on testing set
 
-            csv::CSVReader reader("../data/gtfs/stops.txt");
+            csv::CSVReader reader(dataset_directory + "/stops.txt");
 
             const int id_col = reader.index_of("stop_id");
             const int name_col = reader.index_of("stop_name");
@@ -111,8 +111,8 @@ namespace gtfs {
         }
     }
 
-    std::vector<Stop> load_stops() {
-        std::vector<RawStop> raw_stops = load_raw_stops();
+    std::vector<Stop> load_stops(const std::string& dataset_directory) {
+        std::vector<RawStop> raw_stops = load_raw_stops(dataset_directory);
 
         // <ParentStopId, Platforms>
         std::unordered_map<std::string, std::vector<Platform>> platforms;

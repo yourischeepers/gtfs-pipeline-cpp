@@ -5,5 +5,5 @@
 
 namespace gtfs {
 
-    std::vector<Stop> load_stops();
+    std::vector<Stop> load_stops(const std::string& dataset_directory);
 }
