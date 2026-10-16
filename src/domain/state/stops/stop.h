@@ -16,10 +16,10 @@ namespace gtfs {
 struct Stop {
     std::string id;
     std::string name;
-    double lat;
-    double lon;
+    double lat{};
+    double lon{};
     std::string timezone;
-    WheelchairAccessibility wheelchair_accessible;
+    WheelchairAccessibility wheelchair_accessible{WheelchairAccessibility::Unknown};
     std::vector<Platform> platforms;
 };
 

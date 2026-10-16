@@ -9,7 +9,7 @@ int main() {
 
     const auto start = std::chrono::steady_clock::now();
     gtfs::StopLoader stop_loader;
-    const std::vector<gtfs::Stop> stops = stop_loader.loadStops();
+    const std::vector<gtfs::Stop> stops = stop_loader.load_stops();
 
     const auto end = std::chrono::steady_clock::now();
     const auto duration = std::chrono::duration<double, std::milli>(end - start);

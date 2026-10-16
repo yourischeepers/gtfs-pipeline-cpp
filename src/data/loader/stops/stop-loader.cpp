@@ -1,6 +1,7 @@
 #include "stop-loader.h"
-#include <unordered_map>
 #include <csv.hpp>
+#include <unordered_map>
+#include <ranges>
 
 namespace gtfs {
 
@@ -15,8 +16,8 @@ namespace gtfs {
         std::string platform_code;
     };
 
-    std::vector<Stop> StopLoader::loadStops() {
-        std::vector<RawStop> raw_stops = loadRawStops();
+    std::vector<Stop> StopLoader::load_stops() {
+        std::vector<RawStop> raw_stops = load_raw_stops();
 
         // <ParentStopId, Platforms>
         std::unordered_map<std::string, std::vector<Platform>> platforms;
@@ -24,43 +25,40 @@ namespace gtfs {
         std::unordered_map<std::string, Stop> stops;
 
         // Organise stops and platforms with basic mapping
-        for (auto& raw_stop : raw_stops) {
+        for (const auto& raw_stop : raw_stops) {
             if (raw_stop.parent_station.empty()) {
-                stops[raw_stop.id] = mapNoParentToStop(raw_stop);
+                stops[raw_stop.id] = map_no_parent_to_stop(raw_stop);
             } else {
-                Platform platform = mapToPlatform(raw_stop);
-                platforms[raw_stop.parent_station].push_back(platform);
+                platforms[raw_stop.parent_station].push_back(map_to_platform(raw_stop));
             }
         }
 
         // Connect platforms to stops
         for (auto& [parent_id, plats] : platforms) {
-            for (auto& platform : plats) {
-                if (auto stop  = stops.find(parent_id); stop == stops.end()) {
-                    std::cout << "Missing parent " << parent_id << " for platform " << platform.id << std::endl;
-                } else {
+            if (auto stop = stops.find(parent_id); stop != stops.end()) {
+                for (auto& platform : plats) {
                     stop->second.platforms.push_back(platform);
                 }
             }
         }
 
-        // Add default platform for stops without platforms
-        for (auto& pair : stops) {
-            if (!pair.second.platforms.empty()) continue;
-            pair.second.platforms.push_back(generateDefaultPlatform(pair.second));
-        }
-
-        // Build final array
+        // Build final array while simultaneously adding default platforms where necessary
         std::vector<Stop> result;
         result.reserve(stops.size());
-        for (auto &stop: stops | std::views::values) {
+
+        // Add default platform for stops without platforms
+        for (auto& stop: stops | std::views::values) {
+            if (stop.platforms.empty()) {
+                stop.platforms.push_back(generate_default_platform(stop));
+            }
+
             result.push_back(std::move(stop));
         }
 
         return result;
     }
 
-    Stop StopLoader::mapNoParentToStop(const RawStop& raw_stop) {
+    Stop StopLoader::map_no_parent_to_stop(const RawStop& raw_stop) {
         Stop stop;
 
         stop.id = raw_stop.id;
@@ -73,7 +71,7 @@ namespace gtfs {
         return stop;
     }
 
-    Platform StopLoader::mapToPlatform(const RawStop& raw_stop) {
+    Platform StopLoader::map_to_platform(const RawStop& raw_stop) {
         Platform platform;
 
         platform.id = raw_stop.id;
@@ -84,7 +82,7 @@ namespace gtfs {
         return platform;
     }
 
-    Platform StopLoader::generateDefaultPlatform(const Stop &stop) {
+    Platform StopLoader::generate_default_platform(const Stop &stop) {
         Platform platform;
 
         platform.id = stop.id;
@@ -94,52 +92,60 @@ namespace gtfs {
         return platform;
     }
 
-    std::vector<RawStop> StopLoader::loadRawStops() {
+    std::vector<RawStop> StopLoader::load_raw_stops() {
         std::vector<RawStop> raw_stops;
 
         csv::CSVReader reader("../data/gtfs/stops.txt");
 
+        const int id_col = reader.index_of("stop_id");
+        const int name_col = reader.index_of("stop_name");
+        const int lat_col = reader.index_of("stop_lat");
+        const int lon_col = reader.index_of("stop_lon");
+        const int parent_id_col = reader.index_of("parent_station");
+        const int timezone_col = reader.index_of("stop_timezone");
+        const int wheelchair_accessible_col = reader.index_of("wheelchair_boarding");
+        const int platform_code_col = reader.index_of("platform_code");
+
         for (auto& row : reader) {
             RawStop raw_stop;
 
-            // Always safe to get
-            raw_stop.id = row[0].get<std::string>();
-            raw_stop.name = row[2].get<std::string>();
-            raw_stop.lat = row[3].get<double>();
-            raw_stop.lon = row[4].get<double>();
+            raw_stop.id = get_safely<std::string>(row, id_col, "");
+            raw_stop.name = get_safely<std::string>(row, name_col, "");
+            raw_stop.lat = get_safely<double>(row, lat_col, 0.0);
+            raw_stop.lon = get_safely<double>(row, lon_col, 0.0);
+            raw_stop.parent_station = get_safely<std::string>(row, parent_id_col, "");
+            raw_stop.timezone = get_safely<std::string>(row, timezone_col, "");
+            raw_stop.platform_code = get_safely<std::string>(row, platform_code_col, "");
+            raw_stop.wheelchair_accessible = map_wheelchair_accessible(get_safely<int>(row, wheelchair_accessible_col, 0));
 
-            // Not always safe
-            auto parent_station_field = row[6];
-            auto timezone_field = row[7];
-            auto wheelchair_accessible_field = row[8];
-            auto platform_code_field = row[9];
-
-            if (!parent_station_field.is_null()) {
-                raw_stop.parent_station = parent_station_field.get<std::string>();
-            }
-
-            if (!timezone_field.is_null()) {
-                raw_stop.timezone = timezone_field.get<std::string>();
-            }
-
-            switch (wheelchair_accessible_field.is_null() ? 0 : wheelchair_accessible_field.get<int>()) {
-                case 1:
-                    raw_stop.wheelchair_accessible = WheelchairAccessibility::Accessible;
-                    break;
-                case 2:
-                    raw_stop.wheelchair_accessible = WheelchairAccessibility::NotAccessible;
-                    break;
-                default:
-                    raw_stop.wheelchair_accessible = WheelchairAccessibility::Unknown;
-            }
-
-            if (!platform_code_field.is_null()) {
-                raw_stop.platform_code = platform_code_field.get<std::string>();
-            }
-
-            raw_stops.push_back(raw_stop);
+            raw_stops.push_back(std::move(raw_stop));
         }
 
         return raw_stops;
+    }
+
+    WheelchairAccessibility StopLoader::map_wheelchair_accessible(const int value) {
+        switch (value) {
+            case 1:
+                return WheelchairAccessibility::Accessible;
+            case 2:
+                return WheelchairAccessibility::NotAccessible;
+            default:
+                return WheelchairAccessibility::Unknown;
+        }
+    }
+
+    template <typename T>
+    T StopLoader::get_safely(
+        csv::CSVRow& row,
+        const int column_index,
+        T fallback
+    ) {
+        if (column_index < 0) return fallback;
+
+        auto field = row[column_index];
+        if (field.is_null()) return fallback;
+
+        return field.get<T>();
     }
 }

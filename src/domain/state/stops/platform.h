@@ -6,8 +6,8 @@ namespace gtfs {
 
 struct Platform {
     std::string id;
-    double lat;
-    double lon;
+    double lat{};
+    double lon{};
     std::string platform_code;
 };
 
