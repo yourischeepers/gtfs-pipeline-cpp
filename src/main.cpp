@@ -1,8 +1,7 @@
+#include <chrono>
 #include <iostream>
 #include <vector>
 #include "domain/state/stops/stop.h"
-#include <chrono>
-
 #include "data/loader/stops/stop-loader.h"
 
 int main() {
@@ -16,5 +15,4 @@ int main() {
     const auto duration = std::chrono::duration<double, std::milli>(end - start);
 
     std::cout << "Loaded " << stops.size() << " stops in " << duration.count() << "ms" << std::endl;
-    return 0;
 }

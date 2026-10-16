@@ -7,18 +7,20 @@
 
 namespace gtfs {
 
-class Stop {
+    enum class WheelchairAccessibility {
+        Unknown,
+        Accessible,
+        NotAccessible,
+    };
 
-public:
+struct Stop {
     std::string id;
     std::string name;
-    std::float_t lat;
-    std::float_t lon;
+    double lat;
+    double lon;
     std::string timezone;
-    bool wheelchairAccessible;
+    WheelchairAccessibility wheelchair_accessible;
     std::vector<Platform> platforms;
-
-    void printId();
 };
 
 }

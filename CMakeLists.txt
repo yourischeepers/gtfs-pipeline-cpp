@@ -13,14 +13,14 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
+find_package(Protobuf CONFIG REQUIRED)
+find_package(unofficial-vincentlaucsb-csv-parser CONFIG REQUIRED)
+
 add_executable(gtfs_pipeline ${SOURCES})
 
 target_include_directories(gtfs_pipeline PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
-
-find_package(Protobuf CONFIG REQUIRED)
-find_package(unofficial-vincentlaucsb-csv-parser CONFIG REQUIRED)
 
 target_link_libraries(gtfs_pipeline
         PRIVATE

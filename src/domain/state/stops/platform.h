@@ -4,13 +4,11 @@
 
 namespace gtfs {
 
-class Platform {
-
-public:
+struct Platform {
     std::string id;
-    std::float_t lat;
-    std::float_t lon;
-    std::string platformCode;
+    double lat;
+    double lon;
+    std::string platform_code;
 };
 
 }
