@@ -19,13 +19,14 @@ namespace gtfs {
         };
 
         Stop map_no_parent_to_stop(const RawStop& raw_stop) {
+            TimeZoneParser time_zone_parser;
             Stop stop;
 
             stop.id = raw_stop.id;
             stop.name = raw_stop.name;
             stop.lat = raw_stop.lat;
             stop.lon = raw_stop.lon;
-            stop.timezone = raw_stop.timezone;
+            stop.timezone = time_zone_parser.getTimeZone(raw_stop.timezone);
             stop.wheelchair_accessible = raw_stop.wheelchair_accessible;
 
             return stop;

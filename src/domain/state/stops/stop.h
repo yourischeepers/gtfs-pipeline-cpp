@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "platform.h"
+#include "domain/state/general/timezone.h"
 
 namespace gtfs {
 
@@ -18,7 +19,7 @@ namespace gtfs {
         std::string name;
         double lat{};
         double lon{};
-        std::string timezone;
+        TimeZone timezone{TimeZone::Unknown};
         WheelchairAccessibility wheelchair_accessible{WheelchairAccessibility::Unknown};
         std::vector<Platform> platforms;
     };
