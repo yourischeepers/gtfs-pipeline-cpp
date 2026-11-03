@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <ranges>
 #include <utility>
+#include "data/loader/util/csv-util.h"
 
 namespace gtfs {
 
@@ -38,20 +39,6 @@ namespace gtfs {
                 default:
                     return WheelchairAccessibility::Unknown;
             }
-        }
-
-        template <typename T>
-        T get_safely(
-            const csv::CSVRow& row,
-            const int column_index,
-            T fallback
-        ) {
-            if (column_index < 0) return fallback;
-
-            auto field = row[column_index];
-            if (field.is_null()) return fallback;
-
-            return field.get<T>();
         }
 
         std::vector<RawStop> load_raw_stops(const std::string& dataset_directory) {
