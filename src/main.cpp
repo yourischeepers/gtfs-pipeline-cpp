@@ -5,7 +5,8 @@
 
 static void setup_stops(const std::string& dataset_directory) {
     const auto start = std::chrono::steady_clock::now();
-    const std::vector<gtfs::Stop> stops = gtfs::load_stops(dataset_directory);
+    gtfs::StopLoader stop_loader;
+    const std::vector<gtfs::Stop> stops = stop_loader.load_stops(dataset_directory);
 
     const auto end = std::chrono::steady_clock::now();
     const auto duration = std::chrono::duration<double, std::milli>(end - start);

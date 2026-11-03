@@ -7,30 +7,6 @@
 namespace gtfs {
 
     namespace {
-        struct RawStop {
-            std::string id;
-            std::string name;
-            double lat{};
-            double lon{};
-            std::string parent_station;
-            std::string timezone;
-            WheelchairAccessibility wheelchair_accessible{WheelchairAccessibility::Unknown};
-            std::string platform_code;
-        };
-
-        Stop map_no_parent_to_stop(const RawStop& raw_stop) {
-            TimeZoneParser time_zone_parser;
-            Stop stop;
-
-            stop.id = raw_stop.id;
-            stop.name = raw_stop.name;
-            stop.lat = raw_stop.lat;
-            stop.lon = raw_stop.lon;
-            stop.timezone = time_zone_parser.getTimeZone(raw_stop.timezone);
-            stop.wheelchair_accessible = raw_stop.wheelchair_accessible;
-
-            return stop;
-        }
 
         Platform map_to_platform(const RawStop& raw_stop) {
             Platform platform;
@@ -112,7 +88,20 @@ namespace gtfs {
         }
     }
 
-    std::vector<Stop> load_stops(const std::string& dataset_directory) {
+    Stop StopLoader::map_no_parent_to_stop(const RawStop& raw_stop) const {
+        Stop stop;
+
+        stop.id = raw_stop.id;
+        stop.name = raw_stop.name;
+        stop.lat = raw_stop.lat;
+        stop.lon = raw_stop.lon;
+        stop.timezone = time_zone_parser.getTimeZone(raw_stop.timezone);
+        stop.wheelchair_accessible = raw_stop.wheelchair_accessible;
+
+        return stop;
+    }
+
+    std::vector<Stop> StopLoader::load_stops(const std::string& dataset_directory) {
         std::vector<RawStop> raw_stops = load_raw_stops(dataset_directory);
 
         // <ParentStopId, Platforms>
