@@ -8,8 +8,12 @@ namespace gtfs {
 
     void MemoryStateDataStore::update_current_snapshot(StateSnapshot snapshot) {
         auto ptr = std::make_shared<const StateSnapshot>(std::move(snapshot));
-        std::lock_guard lock(snapshot_mutex);
-        auto old = std::exchange(current_snapshot, std::move(ptr));
+
+        std::shared_ptr<const StateSnapshot> old;
+        {
+            std::lock_guard lock(snapshot_mutex);
+            old = std::exchange(current_snapshot, std::move(ptr));
+        }
     }
 
     std::shared_ptr<const StateSnapshot> MemoryStateDataStore::get_current_snapshot() const {

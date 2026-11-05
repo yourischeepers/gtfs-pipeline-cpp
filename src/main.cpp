@@ -34,7 +34,15 @@ int main() {
     const gtfs::RouteRepositoryImpl route_repository(data_store);
     const gtfs::GetRouteLongNamesByAgencyIdUseCase get_route_long_names_by_agency_id(route_repository);
 
-    for (const auto& route_long_name : get_route_long_names_by_agency_id("GVB")) {
+    // Loading route names
+    const auto start = std::chrono::steady_clock::now();
+    const auto route_long_names = get_route_long_names_by_agency_id("GVB");
+    const auto end = std::chrono::steady_clock::now();
+    const auto duration = std::chrono::duration<double, std::milli>(end - start);
+
+    std::cout << "Found " << route_long_names.size() << " routes in " << duration.count() << "ms" << std::endl;
+
+    for (const auto& route_long_name : route_long_names) {
         std::cout << route_long_name << std::endl;
     }
 
