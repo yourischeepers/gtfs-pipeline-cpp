@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "domain/state/stops/stop.h"
+#include "../../../domain/stops/model/stop.h"
 
 namespace gtfs {
 

@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "domain/state/agencies/agency.h"
+#include "../../../domain/agencies/model/agency.h"
 
 namespace gtfs {
 

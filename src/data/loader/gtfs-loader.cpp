@@ -4,7 +4,7 @@
 
 #include "agencies/agency-loader.h"
 #include "agencies/routes/route-loader.h"
-#include "data/state/state-snapshot.h"
+#include "../../domain/state/model/state-snapshot.h"
 #include "stops/stop-loader.h"
 
 namespace gtfs {

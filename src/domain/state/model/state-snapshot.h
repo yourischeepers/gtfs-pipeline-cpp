@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 
-#include "domain/state/agencies/agency.h"
-#include "domain/state/agencies/routes/route.h"
-#include "domain/state/stops/stop.h"
+#include "../../agencies/model/agency.h"
+#include "../../agencies/routes/model/route.h"
+#include "../../stops/model/stop.h"
 
 namespace gtfs {
 

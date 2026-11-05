@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include "domain/state/general/timezone.h"
+#include "../../util/timezone.h"
 
 namespace gtfs {
 

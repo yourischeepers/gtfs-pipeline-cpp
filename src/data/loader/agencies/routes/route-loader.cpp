@@ -6,7 +6,7 @@
 
 #include "data/loader/util/color-parser.h"
 #include "data/loader/util/csv-util.h"
-#include "domain/state/agencies/routes/route.h"
+#include "../../../../domain/agencies/routes/model/route.h"
 
 namespace gtfs {
 

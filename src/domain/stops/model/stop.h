@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "platform.h"
-#include "domain/state/general/timezone.h"
+#include "../../util/timezone.h"
 
 namespace gtfs {
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "data/state/state-snapshot.h"
+#include "../../domain/state/model/state-snapshot.h"
 
 namespace gtfs {
 

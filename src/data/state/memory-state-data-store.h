@@ -2,7 +2,7 @@
 #include <memory>
 #include <mutex>
 
-#include "state-snapshot.h"
+#include "../../domain/state/model/state-snapshot.h"
 
 namespace gtfs {
 
