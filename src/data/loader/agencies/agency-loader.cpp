@@ -22,7 +22,7 @@ namespace gtfs {
             agency.name = get_safely<std::string>(row, name_col, "");
             agency.url = get_safely<std::string>(row, url_col, "");
             agency.timezone = time_zone_parser.getTimeZone(get_safely<std::string>(row, timezone_col, ""));
-            agency.phone_number = normalize_phonenumber(get_safely<std::string>(row, phone_col, ""));
+            agency.phone_number = normalize_phone_number(get_safely<std::string>(row, phone_col, ""));
 
             agencies.push_back(agency);
         }
@@ -30,12 +30,12 @@ namespace gtfs {
         return agencies;
     }
 
-    long AgencyLoader::normalize_phonenumber(std::string phonenumber) {
-        if (phonenumber.empty()) return 0;
+    long AgencyLoader::normalize_phone_number(std::string phone_number) {
+        if (phone_number.empty()) return 0;
 
-        if (phonenumber.at(0) == '+') phonenumber = phonenumber.substr(1, phonenumber.size() - 1);
-        if (size_t pos = phonenumber.find('-'); pos != std::string::npos) phonenumber.erase(pos, 1);
+        if (phone_number.at(0) == '+') phone_number = phone_number.substr(1, phone_number.size() - 1);
+        if (size_t pos = phone_number.find('-'); pos != std::string::npos) phone_number.erase(pos, 1);
 
-        return std::stol(phonenumber);
+        return std::stol(phone_number);
     }
 }
