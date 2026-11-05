@@ -6,7 +6,7 @@ namespace gtfs {
         time_zones.emplace("Europe/Amsterdam", TimeZone::EuropeAmsterdam);
     }
 
-    TimeZone TimeZoneParser::getTimeZone(const std::string& id) const {
+    TimeZone TimeZoneParser::get_time_zone(const std::string& id) const {
         const auto timeZoneEntry = time_zones.find(id);
         if (timeZoneEntry == time_zones.end()) return TimeZone::Unknown;
         return timeZoneEntry->second;

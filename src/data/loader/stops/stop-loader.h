@@ -19,7 +19,7 @@ namespace gtfs {
     class StopLoader {
 
     public:
-        std::vector<Stop> load_stops(const std::string& dataset_directory);
+        std::vector<Stop> load_stops(const std::string& dataset_directory) const;
 
     private:
         TimeZoneParser time_zone_parser;

@@ -32,7 +32,7 @@ namespace gtfs {
             route.color = parse_hex_color(get_safely<std::string>(row, color_col, fallback_color));
             route.text_color = parse_hex_color(get_safely<std::string>(row, text_color_col, fallback_text_color));
 
-            routes.push_back(route);
+            routes.push_back(std::move(route));
         }
 
         return routes;

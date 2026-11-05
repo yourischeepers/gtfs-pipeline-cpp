@@ -7,8 +7,8 @@ namespace gtfs {
     template <typename T>
     T get_safely(
         const csv::CSVRow& row,
-        int column_index,
-        T fallback
+        const int column_index,
+        const T& fallback
     ) {
         if (column_index < 0) return fallback;
 

@@ -6,11 +6,11 @@
 namespace gtfs {
 
     struct Route {
-        long id;
+        long id{};
         std::string agency_id;
         std::string short_name;
         std::string long_name;
-        Color color;
-        Color text_color;
+        Color color{};
+        Color text_color{};
     };
 }

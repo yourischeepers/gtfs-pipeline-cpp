@@ -82,13 +82,13 @@ namespace gtfs {
         stop.name = raw_stop.name;
         stop.lat = raw_stop.lat;
         stop.lon = raw_stop.lon;
-        stop.timezone = time_zone_parser.getTimeZone(raw_stop.timezone);
+        stop.timezone = time_zone_parser.get_time_zone(raw_stop.timezone);
         stop.wheelchair_accessible = raw_stop.wheelchair_accessible;
 
         return stop;
     }
 
-    std::vector<Stop> StopLoader::load_stops(const std::string& dataset_directory) {
+    std::vector<Stop> StopLoader::load_stops(const std::string& dataset_directory) const {
         std::vector<RawStop> raw_stops = load_raw_stops(dataset_directory);
 
         // <ParentStopId, Platforms>

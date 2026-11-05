@@ -14,7 +14,7 @@ namespace gtfs {
 
     public:
         TimeZoneParser();
-        TimeZone getTimeZone(const std::string& id) const;
+        [[nodiscard]] TimeZone get_time_zone(const std::string& id) const;
 
     private:
         std::unordered_map<std::string, TimeZone> time_zones;

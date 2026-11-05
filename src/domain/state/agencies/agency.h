@@ -9,7 +9,7 @@ namespace gtfs {
         std::string id;
         std::string name;
         std::string url;
-        TimeZone timezone;
-        long phone_number;
+        TimeZone timezone{TimeZone::Unknown};
+        long phone_number{};
     };
 }

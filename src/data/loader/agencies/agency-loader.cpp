@@ -21,10 +21,10 @@ namespace gtfs {
             agency.id = get_safely<std::string>(row, id_col, "");
             agency.name = get_safely<std::string>(row, name_col, "");
             agency.url = get_safely<std::string>(row, url_col, "");
-            agency.timezone = time_zone_parser.getTimeZone(get_safely<std::string>(row, timezone_col, ""));
+            agency.timezone = time_zone_parser.get_time_zone(get_safely<std::string>(row, timezone_col, ""));
             agency.phone_number = normalize_phone_number(get_safely<std::string>(row, phone_col, ""));
 
-            agencies.push_back(agency);
+            agencies.push_back(std::move(agency));
         }
 
         return agencies;
