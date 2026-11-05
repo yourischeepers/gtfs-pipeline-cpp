@@ -10,6 +10,6 @@ namespace gtfs {
         std::string name;
         std::string url;
         TimeZone timezone{TimeZone::Unknown};
-        long phone_number{};
+        std::string phone_number;
     };
 }

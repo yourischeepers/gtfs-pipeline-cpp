@@ -22,20 +22,11 @@ namespace gtfs {
             agency.name = get_safely<std::string>(row, name_col, "");
             agency.url = get_safely<std::string>(row, url_col, "");
             agency.timezone = time_zone_parser.get_time_zone(get_safely<std::string>(row, timezone_col, ""));
-            agency.phone_number = normalize_phone_number(get_safely<std::string>(row, phone_col, ""));
+            agency.phone_number = get_safely<std::string>(row, phone_col, "0");
 
             agencies.push_back(std::move(agency));
         }
 
         return agencies;
-    }
-
-    long AgencyLoader::normalize_phone_number(std::string phone_number) {
-        if (phone_number.empty()) return 0;
-
-        if (phone_number.at(0) == '+') phone_number = phone_number.substr(1, phone_number.size() - 1);
-        if (size_t pos = phone_number.find('-'); pos != std::string::npos) phone_number.erase(pos, 1);
-
-        return std::stol(phone_number);
     }
 }

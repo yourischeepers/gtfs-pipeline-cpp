@@ -13,7 +13,5 @@ namespace gtfs {
 
     private:
         TimeZoneParser time_zone_parser;
-
-        static long normalize_phone_number(std::string phone_number);
     };
 }

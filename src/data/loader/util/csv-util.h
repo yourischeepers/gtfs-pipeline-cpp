@@ -12,7 +12,7 @@ namespace gtfs {
     ) {
         if (column_index < 0) return fallback;
 
-        auto field = row[column_index];
+        auto field = row[static_cast<size_t>(column_index)];
         if (field.is_null()) return fallback;
 
         return field.get<T>();
