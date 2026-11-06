@@ -13,5 +13,6 @@ namespace gtfs {
         [[nodiscard]] std::vector<Agency> load_agencies(const std::string& dataset_directory) const;
         [[nodiscard]] std::vector<Route> load_routes(const std::string& dataset_directory) const;
         [[nodiscard]] std::vector<Trip> load_trips(const std::string& dataset_directory) const;
+        [[nodiscard]] std::vector<TripStops> load_trip_stops(const std::string& dataset_directory, size_t trips_count) const;
     };
 }

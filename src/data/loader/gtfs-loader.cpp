@@ -7,6 +7,7 @@
 #include "../../domain/state/model/state-snapshot.h"
 #include "stops/stop-loader.h"
 #include "trips/trip-loader.h"
+#include "trips/stops/trip-stops-loader.h"
 
 namespace gtfs {
 
@@ -17,6 +18,7 @@ namespace gtfs {
         result.agencies = load_agencies(dataset_directory);
         result.routes = load_routes(dataset_directory);
         result.trips = load_trips(dataset_directory);
+        result.trip_stops = load_trip_stops(dataset_directory, result.trips.size());
 
         return result;
     }
@@ -67,5 +69,17 @@ namespace gtfs {
 
         std::cout << "Loaded " << trips.size() << " trips in " << duration.count() << "ms" << std::endl;
         return trips;
+    }
+
+    std::vector<TripStops> GtfsLoader::load_trip_stops(const std::string &dataset_directory, size_t trips_count) const {
+        const auto start = std::chrono::steady_clock::now();
+        const TripStopsLoader trip_stops_loader;
+        std::vector<TripStops> trip_stops = trip_stops_loader.load_trip_stops(dataset_directory, trips_count);
+
+        const auto end = std::chrono::steady_clock::now();
+        const auto duration = std::chrono::duration<double, std::milli>(end - start);
+
+        std::cout << "Loaded stops for " << trip_stops.size() << " trips in " << duration.count() << "ms" << std::endl;
+        return trip_stops;
     }
 }

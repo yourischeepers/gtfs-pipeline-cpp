@@ -1,6 +1,5 @@
 #include "trip-loader.h"
 #include <csv.hpp>
-#include <filesystem>
 #include <iostream>
 
 #include "data/loader/util/csv-util.h"
