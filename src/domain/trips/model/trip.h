@@ -7,15 +7,15 @@
 namespace gtfs {
 
     struct Trip {
-        long id{};
-        long route_id{};
-        long service_id{};
+        uint32_t id{};
+        uint32_t route_id{};
+        uint32_t service_id{};
         std::string realtime_trip_id;
         std::string headsign;
         std::string short_name;
         std::string long_name;
         bool direction_id{};
-        long shape_id{};
+        uint32_t shape_id{};
         WheelchairAccessibility wheelchair_accessibility{WheelchairAccessibility::Unknown};
         BikesAllowed bikes_allowed{BikesAllowed::Unknown};
     };

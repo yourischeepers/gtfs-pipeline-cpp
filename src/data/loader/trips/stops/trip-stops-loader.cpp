@@ -9,7 +9,7 @@ namespace gtfs {
 
     namespace {
 
-        long map_time(const std::string& input) {
+        uint32_t map_time(const std::string& input) {
             long result = 0;
             const size_t input_len = input.size();
 
@@ -20,7 +20,7 @@ namespace gtfs {
             result += (input[input_len - 2] - '0') * 10;
             result += input[input_len - 1] - '0';
 
-            return result;
+            return static_cast<uint32_t>(result);
         }
 
         PickUpType map_pickup_type(const int data) {
@@ -56,7 +56,7 @@ namespace gtfs {
     }
 
     std::vector<TripStops> TripStopsLoader::load_trip_stops(const std::string& dataset_directory, size_t trips_count) const {
-        csv::CSVReader reader(dataset_directory + "/stop_times.txt");
+        csv::CSVReader reader = create_reader(dataset_directory + "/stop_times.txt");
 
         const int trip_id_col = reader.index_of("trip_id");
         const int stop_sequence_col = reader.index_of("stop_sequence");

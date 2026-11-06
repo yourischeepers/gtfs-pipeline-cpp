@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <internal/csv_reader.hpp>
+#include <csv.hpp>
 
 #include "data/loader/util/color-parser.h"
 #include "data/loader/util/csv-util.h"
@@ -11,7 +11,7 @@
 namespace gtfs {
 
     std::vector<Route> RouteLoader::load_routes(const std::string& dataset_directory) const {
-        csv::CSVReader reader(dataset_directory + "/routes.txt");
+        csv::CSVReader reader = create_reader(dataset_directory + "/routes.txt");
 
         const int id_col = reader.index_of("route_id");
         const int agency_id_col = reader.index_of("agency_id");

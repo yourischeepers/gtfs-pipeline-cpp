@@ -34,7 +34,7 @@ namespace gtfs {
             std::vector<RawStop> raw_stops;
             raw_stops.reserve(60000); // Estimate based on testing set
 
-            csv::CSVReader reader(dataset_directory + "/stops.txt");
+            csv::CSVReader reader = create_reader(dataset_directory + "/stops.txt");
 
             const int id_col = reader.index_of("stop_id");
             const int name_col = reader.index_of("stop_name");

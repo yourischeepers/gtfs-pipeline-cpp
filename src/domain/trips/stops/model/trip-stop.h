@@ -7,8 +7,8 @@ namespace gtfs {
 
     struct TripStop {
         uint32_t stop_id{};
-        long arrival_time{};
-        long departure_time{};
+        uint32_t arrival_time{};
+        uint32_t departure_time{};
         PickUpType pickup_type{PickUpType::Regular};
         DropOffType drop_off_type{DropOffType::Regular};
         TimeAccuracy time_accuracy{TimeAccuracy::Exact};

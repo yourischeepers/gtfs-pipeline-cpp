@@ -5,7 +5,7 @@
 namespace gtfs {
 
     std::vector<Agency> AgencyLoader::load_agencies(const std::string &dataset_directory) const {
-        csv::CSVReader reader(dataset_directory + "/agency.txt");
+        csv::CSVReader reader = create_reader(dataset_directory + "/agency.txt");
 
         const int id_col = reader.index_of("agency_id");
         const int name_col = reader.index_of("agency_name");

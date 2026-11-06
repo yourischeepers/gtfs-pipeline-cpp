@@ -16,7 +16,7 @@ namespace gtfs {
     }
 
     std::vector<Trip> TripLoader::load_trips(const std::string &dataset_directory) const {
-        csv::CSVReader reader(dataset_directory + "/trips.txt");
+        csv::CSVReader reader = create_reader(dataset_directory + "/trips.txt");
 
         const int route_id_col = reader.index_of("route_id");
         const int service_id_col = reader.index_of("service_id");
@@ -38,15 +38,15 @@ namespace gtfs {
         for (auto& row : reader) {
             Trip trip;
 
-            trip.id = get_safely<long>(row, trip_id_col, 0);
-            trip.route_id = get_safely<long>(row, route_id_col, 0);
-            trip.service_id = get_safely<long>(row, service_id_col, 0);
+            trip.id = get_safely<uint32_t>(row, trip_id_col, 0);
+            trip.route_id = get_safely<uint32_t>(row, route_id_col, 0);
+            trip.service_id = get_safely<uint32_t>(row, service_id_col, 0);
             trip.realtime_trip_id = get_safely<std::string>(row, realtime_trip_id_col, "");
             trip.headsign = get_safely<std::string>(row, trip_headsign_col, "");
             trip.short_name = get_safely<std::string>(row, trip_short_name_col, "");
             trip.long_name = get_safely<std::string>(row, trip_long_name_col, "");
             trip.direction_id = get_safely<int>(row, direction_id_col, 0) == 1;
-            trip.shape_id = get_safely<long>(row, shape_id_col, 0);
+            trip.shape_id = get_safely<uint32_t>(row, shape_id_col, 0);
             trip.wheelchair_accessibility = parse_wheelchair_accessibility(get_safely<int>(row, wheelchair_accessible_col, 0));
             trip.bikes_allowed = parse_bikes_allowed(get_safely<int>(row, bikes_allowed_col, 0));
 
