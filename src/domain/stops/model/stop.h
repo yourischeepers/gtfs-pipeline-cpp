@@ -5,14 +5,9 @@
 
 #include "platform.h"
 #include "../../util/timezone.h"
+#include "domain/util/wheelchair-accessibility.h"
 
 namespace gtfs {
-
-    enum class WheelchairAccessibility {
-        Unknown,
-        Accessible,
-        NotAccessible,
-    };
 
     struct Stop {
         std::string id;

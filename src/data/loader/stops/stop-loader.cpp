@@ -30,17 +30,6 @@ namespace gtfs {
             return platform;
         }
 
-        WheelchairAccessibility map_wheelchair_accessible(const int value) {
-            switch (value) {
-                case 1:
-                    return WheelchairAccessibility::Accessible;
-                case 2:
-                    return WheelchairAccessibility::NotAccessible;
-                default:
-                    return WheelchairAccessibility::Unknown;
-            }
-        }
-
         std::vector<RawStop> load_raw_stops(const std::string& dataset_directory) {
             std::vector<RawStop> raw_stops;
             raw_stops.reserve(60000); // Estimate based on testing set
@@ -66,7 +55,7 @@ namespace gtfs {
                 raw_stop.parent_station = get_safely<std::string>(row, parent_id_col, "");
                 raw_stop.timezone = get_safely<std::string>(row, timezone_col, "");
                 raw_stop.platform_code = get_safely<std::string>(row, platform_code_col, "");
-                raw_stop.wheelchair_accessible = map_wheelchair_accessible(get_safely<int>(row, wheelchair_accessible_col, 0));
+                raw_stop.wheelchair_accessible = parse_wheelchair_accessibility(get_safely<int>(row, wheelchair_accessible_col, 0));
 
                 raw_stops.push_back(std::move(raw_stop));
             }
