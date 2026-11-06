@@ -72,13 +72,26 @@ namespace gtfs {
         std::vector<TripStops> trip_stops;
         trip_stops.reserve(trips_count);
 
-        long current_trip_id = -1;
+        uint32_t current_trip_id = UINT32_MAX;
         int current_stop_sequence = -1;
         std::vector<TripStop> current_inner_stops;
 
+        auto flush_trip = [&] {
+            if (current_inner_stops.empty()) return;
+
+            TripStops new_entry;
+            new_entry.id = current_trip_id;
+
+            // Copy is on purpose; this preserves capacity giving an exact-size vector, reducing memory usage
+            new_entry.stops.assign(current_inner_stops.begin(), current_inner_stops.end());
+
+            trip_stops.push_back(std::move(new_entry));
+            current_inner_stops.clear();
+        };
+
         for (auto& row : reader) {
-            int stop_sequence = get_safely<int>(row, stop_sequence_col, -1);
-            long trip_id = get_safely<long>(row, trip_id_col, -1);
+            const int stop_sequence = get_safely<int>(row, stop_sequence_col, -1);
+            const auto trip_id = get_safely<uint32_t>(row, trip_id_col, UINT32_MAX);
 
             if (stop_sequence <= current_stop_sequence && current_trip_id == trip_id) {
                 throw std::runtime_error("Invalid stop sequence index");
@@ -87,15 +100,7 @@ namespace gtfs {
             current_stop_sequence = stop_sequence;
 
             if (trip_id != current_trip_id) {
-                if (!current_inner_stops.empty()) {
-                    TripStops new_entry;
-                    new_entry.id = current_trip_id;
-                    new_entry.stops = current_inner_stops;
-
-                    trip_stops.push_back(std::move(new_entry));
-                    current_inner_stops.clear();
-                }
-
+                flush_trip();
                 current_trip_id = trip_id;
             }
 
@@ -113,14 +118,7 @@ namespace gtfs {
             current_inner_stops.push_back(std::move(current_trip_stop));
         }
 
-        if (!current_inner_stops.empty()) {
-            TripStops new_entry;
-            new_entry.id = current_trip_id;
-            new_entry.stops = current_inner_stops;
-
-            trip_stops.push_back(std::move(new_entry));
-            current_inner_stops.clear();
-        }
+        flush_trip();
 
         return trip_stops;
     }

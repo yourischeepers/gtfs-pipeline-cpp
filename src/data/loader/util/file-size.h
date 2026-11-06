@@ -4,5 +4,5 @@
 
 namespace gtfs {
 
-    std::uintmax_t get_file_size_bytes(const std::string& path);
+    [[nodiscard]] std::uintmax_t get_file_size_bytes(const std::string& path);
 }

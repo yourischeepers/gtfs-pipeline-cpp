@@ -4,7 +4,7 @@
 
 namespace gtfs {
 
-    csv::CSVReader create_reader(const std::string& file_path);
+    [[nodiscard]] csv::CSVReader create_reader(const std::string& file_path);
 
     template <typename T>
     T get_safely(

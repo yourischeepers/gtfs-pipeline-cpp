@@ -6,7 +6,7 @@
 namespace gtfs {
 
     struct TripStops {
-        long id{};
+        uint32_t id{};
         std::vector<TripStop> stops;
     };
 }
