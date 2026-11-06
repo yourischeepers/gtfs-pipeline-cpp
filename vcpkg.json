@@ -3,6 +3,7 @@
   "version-string": "0.1.0",
   "dependencies": [
     "protobuf",
-    "vincentlaucsb-csv-parser"
+    "vincentlaucsb-csv-parser",
+    "curl"
   ]
 }
