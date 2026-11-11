@@ -16,6 +16,7 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 find_package(Protobuf CONFIG REQUIRED)
 find_package(unofficial-vincentlaucsb-csv-parser CONFIG REQUIRED)
 find_package(CURL REQUIRED)
+find_package(libzip CONFIG REQUIRED)
 
 add_executable(gtfs_pipeline ${SOURCES})
 target_compile_options(gtfs_pipeline PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wconversion)
@@ -29,4 +30,5 @@ target_link_libraries(gtfs_pipeline
         protobuf::libprotobuf
         unofficial::vincentlaucsb-csv-parser::csv
         CURL::libcurl
+        libzip::zip
 )

@@ -1,6 +1,8 @@
 #include "dataset-repository-impl.h"
 
 #include <fstream>
+#include <stdexcept>
+#include "data/util/zip/zip-util.h"
 
 namespace gtfs {
 
@@ -32,5 +34,11 @@ namespace gtfs {
 
     void DatasetRepositoryImpl::download_dataset() const {
         data_source.download_dataset();
+    }
+
+    void DatasetRepositoryImpl::unzip_dataset() const {
+        unzip("./data/gtfs.zip", "./data/tmp");
+        std::filesystem::rename("./data/tmp", "./data/gtfs");
+        std::filesystem::remove("./data/gtfs.zip");
     }
 }

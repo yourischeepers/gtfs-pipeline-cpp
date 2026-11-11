@@ -4,6 +4,7 @@
   "dependencies": [
     "protobuf",
     "vincentlaucsb-csv-parser",
-    "curl"
+    "curl",
+    "libzip"
   ]
 }

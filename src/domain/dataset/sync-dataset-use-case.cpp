@@ -11,5 +11,6 @@ namespace gtfs {
         // TODO
         std::cout << "Should sync now!" << std::endl;
         repository.download_dataset();
+        repository.unzip_dataset();
     }
 }
