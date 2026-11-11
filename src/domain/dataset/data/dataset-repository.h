@@ -7,6 +7,8 @@ namespace gtfs {
 
     public:
         virtual ~DatasetRepository() = default;
-        virtual std::string get_newest_e_tag() const = 0;
+        [[nodiscard]] virtual std::string get_newest_e_tag() const = 0;
+        [[nodiscard]] virtual std::string get_stored_e_tag() const = 0;
+        virtual void store_e_tag(const std::string& etag) const = 0;
     };
 }

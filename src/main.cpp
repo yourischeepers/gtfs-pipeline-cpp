@@ -11,6 +11,8 @@
 #include "network/dataset/dataset-data-source-impl.h"
 #include <curl/curl.h>
 
+#include "domain/dataset/check-for-new-dataset-use-case.h"
+
 static long get_memory_usage_kibibytes() {
     rusage usage{};
 
@@ -55,10 +57,10 @@ int main() {
 
     const gtfs::DatasetDataSourceImpl dataset_data_source;
     const gtfs::DatasetRepositoryImpl dataset_repository(dataset_data_source);
-    const gtfs::GetNewestETagUseCase get_newest_e_tag_use_case(dataset_repository);
+    const gtfs::SyncDatasetUseCase sync_dataset_use_case(dataset_repository);
+    const gtfs::CheckForNewDatasetUseCase check_for_new_dataset_use_case(dataset_repository, sync_dataset_use_case);
 
-    const auto e_tag = get_newest_e_tag_use_case();
-    std::cout << "Found ETag " << e_tag << std::endl;
+    check_for_new_dataset_use_case();
 
     curl_global_cleanup();
 }
