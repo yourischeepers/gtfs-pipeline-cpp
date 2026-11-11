@@ -11,6 +11,7 @@ namespace gtfs {
         [[nodiscard]] std::string get_newest_e_tag() const override;
         [[nodiscard]] std::string get_stored_e_tag() const override;
         void store_e_tag(const std::string& etag) const override;
+        void download_dataset() const override;
 
     private:
         const DatasetDataSource& data_source;

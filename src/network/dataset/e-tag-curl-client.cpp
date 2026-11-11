@@ -2,29 +2,18 @@
 
 #include <stdexcept>
 
+#include "network/util/curl-util.h"
+
 namespace gtfs {
-
-    namespace {
-
-        void setopt_secure(CURL* handle, CURLoption opt, long param) {
-            CURLcode code = curl_easy_setopt(handle, opt, param);
-            if (code != CURLE_OK) throw std::runtime_error(curl_easy_strerror(code));
-        }
-
-        void setopt_secure(CURL* handle, CURLoption opt, const char* param) {
-            CURLcode code = curl_easy_setopt(handle, opt, param);
-            if (code != CURLE_OK) throw std::runtime_error(curl_easy_strerror(code));
-        }
-    }
 
     ETagCurlClient::ETagCurlClient() : curl(curl_easy_init(), &curl_easy_cleanup) {
         if (!curl) throw std::runtime_error("curl_easy_init failed");
 
-        setopt_secure(curl.get(), CURLOPT_URL, "https://gtfs.ovapi.nl/gtfs-nl.zip");
-        setopt_secure(curl.get(), CURLOPT_NOBODY, 1L);
-        setopt_secure(curl.get(), CURLOPT_FOLLOWLOCATION, 1L);
-        setopt_secure(curl.get(), CURLOPT_TIMEOUT, 10L);
-        setopt_secure(curl.get(), CURLOPT_USERAGENT, "YouriScheepers");
+        curl_setopt_secure(curl.get(), CURLOPT_URL, "https://gtfs.ovapi.nl/gtfs-nl.zip");
+        curl_setopt_secure(curl.get(), CURLOPT_NOBODY, 1L);
+        curl_setopt_secure(curl.get(), CURLOPT_FOLLOWLOCATION, 1L);
+        curl_setopt_secure(curl.get(), CURLOPT_TIMEOUT, 10L);
+        curl_setopt_secure(curl.get(), CURLOPT_USERAGENT, "YouriScheepers");
     }
 
     std::string ETagCurlClient::fetch_e_tag() const {

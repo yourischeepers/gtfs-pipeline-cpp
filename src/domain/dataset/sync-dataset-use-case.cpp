@@ -10,5 +10,6 @@ namespace gtfs {
     void SyncDatasetUseCase::operator()() const {
         // TODO
         std::cout << "Should sync now!" << std::endl;
+        repository.download_dataset();
     }
 }

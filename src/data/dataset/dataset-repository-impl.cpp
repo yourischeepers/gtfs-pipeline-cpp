@@ -29,4 +29,8 @@ namespace gtfs {
         // We do this rename/remove strategy to avoid invalid ETags when a crash occurs during writing
         std::filesystem::rename("./data/etag.txt.tmp", "./data/etag.txt");
     }
+
+    void DatasetRepositoryImpl::download_dataset() const {
+        data_source.download_dataset();
+    }
 }
